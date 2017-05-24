@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load base_extra %}
+{% block title %}Login page{% endblock %}
+{% block content %}
+<div class="container mt-300">
+  <div class="row">
+    <div class="col-sm-6 col-md-4 col-md-offset-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <strong> Sign in </strong>
+        </div>
+        <div class="panel-body margin-bottom-0">
+          <form role="form" action="{% url 'xingapp:login' %}" method="POST">
+            {% csrf_token %}
+            {% if form.non_field_errors or form.this_is_the_login_form.errors %}
+              {% for error in form.non_field_errors %}
+              <p class="form-field-error form-error">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+            <formset>
+              <div class="row">
+                <div class="col-sm-12 col-md-10  col-md-offset-1">
+                  {% for field in form %}
+                    <div class="form-group">
+                      <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="glyphicon glyphicon-{{ field.name|glyphicon_tags }}"></i>
+                        </span>
+                        {{ field }}
+                      </div>
+                      {% if field.errors %}
+                        {{ field.errors }}
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                  <div class="form-group">
+                    <input type="submit" class="btn btn-lg btn-success btn-block btn-signin" value="Login">
+                  </div>
+                </div>
+              </div>
+            </formset>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="copyright"> Xing parser © 2017 </div>
+</div>
+{% endblock %}

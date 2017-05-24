@@ -1,0 +1,9 @@
+.env/
+*.pyc
+search_employees/build/
+search_employees/dbs/
+search_employees/eggs/
+search_employees/logs/
+search_employees/project.egg-info/
+search_employees/twistd.pid
+search_employees/setup.py

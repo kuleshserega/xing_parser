@@ -1,0 +1,6 @@
+.login .form-row #id_email {
+    box-sizing: border-box;
+    clear: both;
+    padding: 8px;
+    width: 100%;
+}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load staticfiles base_extra %}
+{% block title %}Search details{% endblock %}
+{% block content %}
+<div class="container mt-100">
+  <div class="row">
+    {% if employees %}
+      <table id="allProjectsTable" class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Current company</th>
+            <th>Current position</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+          {% for employee in employees %}
+            <tr>
+              <td><a href="https://www.xing.com{{ employee.employee_link }}">{{ employee.id }}</a></td>
+              <td>{{ employee.first_name }}</td>
+              <td>{% if employee.last_name %}{{ employee.last_name }}{% endif %}</td>
+              <td>{% if employee.current_company %}{{ employee.current_company }}{% endif %}</td>
+              <td>{% if employee.current_position %}{{ employee.current_position }}{% endif %}</td>
+              <td>{% if employee.location %}{{ employee.location }}{% endif %}</td>
+            </tr>
+          {% endfor %}
+      </table>
+    {% else %}
+      <div class="clear">
+        <p>No results found</p>
+      </div>
+    {% endif %}
+    {% if is_paginated %}
+      <div class="pagination">
+        <span class="page-links">
+          {% if page_obj.has_previous %}
+            <a href="{% url 'xingapp:search-details' search_info.id %}?page={{ page_obj.previous_page_number }}"><img class="el-width-25" src="{% static 'img/previous.png' %}"></a>
+          {% endif %}
+          <span class="page-current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+          </span>
+          {% if page_obj.has_next %}
+            <a href="{% url 'xingapp:search-details' search_info.id %}?page={{ page_obj.next_page_number }}"><img class="el-width-25" src="{% static 'img/next.png' %}"></a>
+          {% endif %}
+        </span>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}

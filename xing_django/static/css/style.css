@@ -1,0 +1,289 @@
+body {
+    background-color: #222222;
+    color: #ffffff;
+    font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 15px;
+    line-height: 1.42857;
+}
+
+input, table {
+    color: #000;
+}
+
+.panel-heading {
+    padding: 5px 15px;
+}
+
+.panel-footer {
+	padding: 1px 15px;
+	color: #A0A0A0;
+}
+
+.profile-img {
+	width: 96px;
+	height: 96px;
+	margin: 0 auto 10px;
+	display: block;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+}
+
+.copyright {
+    color: #999;
+    font-size: 13px;
+    margin: 0 auto;
+    padding: 10px;
+    text-align: center;
+}
+
+.messages {
+	position: absolute!important;
+	top: 25px;
+	right: 25px;
+	z-index: 99999;
+	opacity: 0.9;
+}
+.messages i {
+    font-size: 20px;
+    margin-right: 12px;
+}
+.messages span {
+    position: relative;
+    top: -3px;
+}
+
+.menu {
+    /*margin-left: 5px;*/
+    border-right: 1px solid grey;
+    padding: 10px;
+
+}
+
+.title{
+    border-bottom: solid 1px lightgray;
+}
+
+.content_data {
+    padding: 5px;
+}
+
+.form-field-error {
+    font-family: Arial, Helvetica, sans-serif; 
+    font-size: 10px;
+    border: 1px solid;
+    margin: 10px 0px;
+    padding: 10px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+
+input.required {
+  border-color: #ffbaba;
+}
+
+.errorlist li{
+    list-style-type: none;
+}
+
+#id_manager, #id_developer{
+    border: 2px solid #bdc3c7;
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: none;
+    color: #34495e;
+    font-family: Lato,Helvetica,Arial,sans-serif;
+    font-size: 15px;
+    height: 42px;
+    line-height: 1.467;
+    padding: 8px 12px;
+    transition: border 0.25s linear 0s, color 0.25s linear 0s, background-color 0.25s linear 0s;
+}
+
+.addproject{
+    margin-top: 25px;
+    float: right;
+    padding: 12px 15px!important;
+    margin-top: 0px;
+}
+
+.errorlist {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    border: 1px solid;
+    margin: 10px 0px;
+    padding: 10px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    color: #D8000C;
+    background-color: #FFBABA;
+}
+
+.logout{
+    position: absolute;
+    right: 25px;
+    top: 12px;
+}
+
+thead {
+  background-color: #ECF0F1;
+  font-size: 14px;
+}
+
+.search_buttons{
+    float: right;
+    margin-right: 10px;
+    height: 45px;
+}
+
+#id_url_does_not_exist, #id_working_now{
+    width: auto;
+    height: auto;
+    display: inline;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #46b8da!important;
+}
+
+#allProjectsTable a {
+    color: #5cb85c!important;
+}
+
+.block-header {
+    height: 70px;
+    position: fixed;
+    background-color: #007575;
+    top: 0px;
+    width: 100%;
+    z-index: 100;
+}
+
+.is-table-row {
+    display: table;
+    width: 100%;
+    margin-top: 25px;
+}
+
+.is-table-row [class*="col-"] {
+    float: none;
+    display: table-cell;
+    vertical-align: top;
+}
+
+i.glyphicon, span.glyphicon {
+    margin-right: 5px;
+}
+
+.blue-link:link, .blue-link:hover, .blue-link:visited, .blue-link:active {
+    color: #3498db;
+}
+
+.project-icon {
+    margin-top: 15px;
+    height: 40px;
+}
+
+.mt-100 {
+    margin-top: 100px;
+}
+
+.mt-150 {
+    margin-top: 150px;
+}
+
+.mt-300 {
+    margin-top: 300px;
+}
+
+.btn-signin {
+    width:48%!important;
+    margin: 0 auto;
+}
+
+.btn-signup {
+    width:48%!important;
+    float:left;
+}
+
+.btn-proj {
+    width:47%!important;
+}
+
+.h1-logo {
+    margin-top: 10px;
+}
+
+.h1-proj {
+    width: 25%;
+    float: left;
+}
+
+.margin-bottom-0 {
+    padding-bottom: 0px!important;
+}
+
+.search-proj-form {
+    width:750px;
+    float:right;
+    display:block;
+}
+
+.el-width-25 {
+    width: 25px!important;
+}
+
+.el-width-110 {
+    width: 110px!important;
+}
+
+.el-width-200 {
+    width: 200px!important;
+}
+
+#id_username, #id_password {
+    width: 100%!important;
+}
+
+.clear {
+    clear: both;
+}
+
+.grey777{
+    color: #777;
+}
+
+#allProjectsTable th {
+    min-width: 100px;
+}
+
+.center {
+    text-align: center;
+    display: block;
+}
+
+.highlight {
+    background-color: #ffff00!important;
+}
+
+#id_files {
+    height: auto;
+}
+
+a.head-white {
+    color: #ffffff;
+    text-decoration: none;
+    margin-left: 10px;
+    font-size: 30px;
+}
+
+.top-logo-img {
+    width: 45px;
+    margin-right: 5px;
+}
+
+table > tbody > tr:nth-child(even) {
+    background: #D1D0CE;
+}

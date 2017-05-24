@@ -11,9 +11,13 @@ from xingapp.models import XingSearch
 
 class XingByCompanySpider(Spider):
     name = 'xing_by_company'
-    allowed_domains = ['xing.com']
-    start_urls = ['http://xing.com/']
-    search_url = 'https://www.xing.com/companies/{company}/employees.json?' \
+    allowed_domains = ['https://www.xing.com']
+    start_urls = ['https://www.xing.com']
+    company_urls_list = [
+        'https://www.xing.com/companies/{company}',
+        'https://www.xing.com/company/{company}',
+    ]
+    search_url = 'https://www.xing.com/company/{company}/employees.json?' \
         'filter=all&letter={letter}&limit=50&offset={offset}'
 
     def __init__(self, search_term='siemensag', *args, **kwargs):
@@ -27,18 +31,48 @@ class XingByCompanySpider(Spider):
 
     def parse(self, response):
         self.xing_search = XingSearch(
-            search_term=self.search_term, search_type=2, search_geo=self.city)
+            search_term=self.search_term, search_type=1)
         self.xing_search.save()
 
-        letter = 'A'
-        offset = 0
-        url = self.search_url.format(
-            company=self.search_term, letter=letter, offset=offset)
+        url = self.company_urls_list[0].format(company=self.search_term)
+        return Request(
+            url, callback=self._try_first_company_url, dont_filter=True)
 
-        return Request(url, callback=self._parse_details, dont_filter=True)
+    def _try_first_company_url(self, response):
+        company_name = response.xpath(
+            '//h1[contains(@class, "organization-name")]/text()'
+        ).extract_first()
+
+        if company_name:
+            url = self.search_url.format(
+                company=self.search_term, letter='A', offset=0)
+            return Request(url, callback=self._parse_items, dont_filter=True)
+        else:
+            url = self.company_urls_list[1].format(company=self.search_term)
+            return Request(
+                url, callback=self._try_second_company_url, dont_filter=True)
+
+    def _try_second_company_url(self, response):
+        company_name = response.xpath(
+            '//h1[contains(@class, "organization-name")]/text()'
+        ).extract_first()
+
+        if company_name:
+            url = self.search_url.format(
+                company=self.search_term, letter='A', offset=0)
+            return Request(url, callback=self._parse_items, dont_filter=True)
+
+    def _parse_items(self, response):
+        item = XingSpiderItem()
+        print response.body
+        url = self.search_url.format(
+            company=self.search_term, letter='A', offset=0)
+        request = Request(url, callback=self._parse_details, dont_filter=True)
+        request.meta['item'] = item
+        return request
 
     def _parse_details(self, response):
-        print response
+        print response.body
 
         # for employee in employees_info:
         #     item = XingSpiderItem()

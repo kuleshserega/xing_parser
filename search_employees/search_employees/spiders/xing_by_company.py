@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import urlparse
 
 from scrapy import Spider
 from scrapy.http import Request
@@ -24,13 +25,11 @@ class XingByCompanySpider(Spider):
         'https://www.xing.com/companies/{company}',
         'https://www.xing.com/company/{company}',
     ]
-    company_name = None
+    search_employees_url_part = 'employees.json?' \
+        'filter=all&letter={letter}&limit=50'
     company_location = None
-    company_url_part = 'companies'
-    search_url = 'https://www.xing.com/{company_url_part}/{company}/' \
-        'employees.json?filter=all&letter={letter}&limit=50&offset={offset}'
 
-    def __init__(self, search_term='nextlevelgmbh', *args, **kwargs):
+    def __init__(self, search_term='siemensag', *args, **kwargs):
         super(XingByCompanySpider, self).__init__(*args, **kwargs)
         dispatcher.connect(self.spider_closed, signals.spider_closed)
         self.search_term = search_term
@@ -45,33 +44,34 @@ class XingByCompanySpider(Spider):
         self.xing_search.save()
 
         for company_url in self.company_urls_list:
-            print 'self.company_name:', self.company_name
-            if self.company_name:
-                break
-
             url = company_url.format(company=self.search_term)
-            print '=============', url
-            if 'company' in url:
-                self.company_url_part = 'company'
-
             yield Request(
                 url, callback=self._parse_company_url, dont_filter=True)
 
     def _parse_company_url(self, response):
-        self.company_name = self._get_company_name_from_page(response)
+        company_name = self._get_company_name_from_page(response)
 
         city = self._get_company_city_from_page(response)
         country = self._get_company_country_from_page(response)
-        self.company_location = '%s, %s' % (city, country)
+        company_location = '%s, %s' % (city, country)
 
-        if self.company_name:
+        base_company_url = response.url
+        if company_name:
             for letter in LETTERS_LIST:
-                items_url = self.search_url.format(
-                    company_url_part=self.company_url_part,
-                    company=self.search_term, letter=letter, offset=0)
+                search_url_part = self.search_employees_url_part.format(
+                    letter=letter, offset=0)
+                items_url = '%s/%s' % (base_company_url, search_url_part)
+
+                company_name = company_name.strip() if company_name else None
+                meta = {
+                    'letter': letter,
+                    'items_url': items_url,
+                    'company_name': company_name,
+                    'company_location': company_location}
+
                 yield Request(
                     items_url, callback=self._parse_employees_items,
-                    meta={"letter": letter}, dont_filter=True)
+                    meta=meta, dont_filter=True)
 
     def _get_company_name_from_page(self, response):
         company_name = response.xpath(
@@ -101,19 +101,27 @@ class XingByCompanySpider(Spider):
         return None
 
     def _parse_employees_items(self, response):
-        letter = response.meta['letter']
-
+        meta = response.meta
         try:
             data = json.loads(response.body)
-            employees_list = data['contacts'][letter]['html']
+            employees_list = data['contacts'][meta['letter']]['html']
+            total = data['contacts'][meta['letter']]["total"]
+            offset = data['contacts'][meta['letter']]["offset"]
+            if total == 50:
+                offset_row_param = 'offset=%d' % (offset+50)
+                url = '%s&%s' % (meta['items_url'], offset_row_param)
+                yield Request(
+                    url, callback=self._parse_employees_items,
+                    meta=meta, dont_filter=True)
+
             for employee in employees_list:
-                text = employee.decode('unicode-escape').encode('utf-8')
+                text = employee.decode('unicode-escape').encode('ascii')
 
                 xhs = Selector(text=text)
 
                 item = XingSpiderItem()
-                item['current_company'] = self.company_name
-                item['location'] = self.company_location
+                item['current_company'] = meta['company_name']
+                item['location'] = meta['company_location']
                 item['search'] = self.xing_search
 
                 name = self._get_name(xhs)
@@ -125,16 +133,6 @@ class XingByCompanySpider(Spider):
                 item['employee_link'] = self._get_employee_link(xhs)
                 item['current_position'] = self._get_current_position(xhs)
                 yield item
-
-            total = data['contacts'][letter]["total"]
-            offset = data['contacts'][letter]["offset"]
-            if total == 50:
-                items_url = self.search_url.format(
-                    company_url_part=self.company_url_part,
-                    company=self.search_term, letter=letter, offset=offset+50)
-                yield Request(
-                    items_url, callback=self._parse_employees_items,
-                    meta={"letter": letter}, dont_filter=True)
         except Exception as e:
             print e
 

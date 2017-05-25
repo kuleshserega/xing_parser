@@ -18,7 +18,7 @@
         </thead>
           {% for employee in employees %}
             <tr>
-              <td><a href="https://www.xing.com{{ employee.employee_link }}">{{ employee.id }}</a></td>
+              <td><a href="{% if employee.employee_link %}https://www.xing.com{{ employee.employee_link }}{% endif %}">{{ employee.id }}</a></td>
               <td>{{ employee.first_name }}</td>
               <td>{% if employee.last_name %}{{ employee.last_name }}{% endif %}</td>
               <td>{% if employee.current_company %}{{ employee.current_company }}{% endif %}</td>

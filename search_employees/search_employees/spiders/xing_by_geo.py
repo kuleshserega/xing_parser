@@ -6,20 +6,15 @@ from scrapy.xlib.pydispatch import dispatcher
 
 from search_employees.items import XingSpiderItem
 
-from xingapp.models import XingSearch
+from xingapp.models import XingSearch, XingUser
 
 
 class XingByGeoSpider(Spider):
     name = 'xing_by_geo'
     allowed_domains = ['https://www.xing.com']
     start_urls = ['https://login.xing.com/login']
-    # login_user = 'antolin@animaticmedia.com'
-    # login_pass = 'KievIsCool3000'
-    login_user = 'juleesamarskaya@gmail.com'
-    login_pass = 'asdf123456'
     search_url = 'https://www.xing.com/search/members?advanced_form=true&' \
         'city={city}&keywords={search_term}&section=members&page={page}'
-    count_item = 0
 
     def __init__(self, search_term='programmer', city='Kiev', *args, **kwargs):
         super(XingByGeoSpider, self).__init__(*args, **kwargs)
@@ -27,20 +22,22 @@ class XingByGeoSpider(Spider):
         self.search_term = search_term
         self.city = city
 
+        self.xing_search = XingSearch(
+            search_term=self.search_term, search_type=2, search_geo=self.city)
+        self.xing_search.save()
+
+        self.user = XingUser.objects.all()[0]
+
     def spider_closed(self, spider):
         self.xing_search.status = 2
         self.xing_search.save()
 
     def parse(self, response):
-        self.xing_search = XingSearch(
-            search_term=self.search_term, search_type=2, search_geo=self.city)
-        self.xing_search.save()
-
         return FormRequest.from_response(
             response,
             formdata={
-                'login_form[username]': self.login_user,
-                'login_form[password]': self.login_pass},
+                'login_form[username]': self.user.email,
+                'login_form[password]': self.user.password},
             callback=self._parse_item, dont_filter=True)
 
     def _parse_item(self, response):
@@ -52,7 +49,8 @@ class XingByGeoSpider(Spider):
             else:
                 break
 
-        pages = 3
+        # maximum search results pages that xing return with city param
+        pages = 16
         for page in xrange(1, pages):
             url = self.search_url.format(
                 city=self.city, search_term=self.search_term, page=page)

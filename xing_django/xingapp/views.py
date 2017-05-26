@@ -59,7 +59,7 @@ class SearchDetailsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return XingSearchResult.objects.filter(
-            search_id=self.kwargs['pk']).order_by('id')
+            search_id=self.kwargs['pk']).order_by('last_name')
 
     def get_context_data(self, **kwargs):
         data = super(SearchDetailsView, self).get_context_data(**kwargs)
@@ -84,7 +84,7 @@ def get_xing_employees_csv(request, pk):
     response['Content-Disposition'] = \
         'attachment; filename="%s_employees.csv"' % s.search_term
 
-    qs = XingSearchResult.objects.filter(search_id=s.id).order_by('id')
+    qs = XingSearchResult.objects.filter(search_id=s.id).order_by('last_name')
 
     writer = csv.writer(response)
     writer.writerow([

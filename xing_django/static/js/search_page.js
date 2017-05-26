@@ -3,13 +3,18 @@ $(document).ready(function(){
     e.preventDefault();
     var search_term = $('#id_search').val();
     var search_type = $('#search_type').val();
-    var string_row_search_geo = (search_type == '2') ? '&search_geo=' + $('#search_geo').val() : '';
+    if (search_type == 1){
+      var spider = 'xing_by_company';
+    } else if (search_type == 2){
+      var spider = 'xing_by_geo';
+    }
+
     $.ajax({
       url: 'http://localhost:6800/schedule.json',
       method: 'POST',
       data: {
         "project": "search_employees",
-        "spider": "xing_by_geo",
+        "spider": spider,
         "search_term": $('#id_search').val(),
         "city": $('#search_geo').val()
       },

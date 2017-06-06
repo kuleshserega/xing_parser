@@ -80,7 +80,7 @@ def get_xing_employees_csv(request, pk):
     except Exception:
         return HttpResponse('Xing search do not exists')
 
-    response = HttpResponse(content_type='text/csv')
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
     response['Content-Disposition'] = \
         'attachment; filename="%s_employees.csv"' % s.search_term
 

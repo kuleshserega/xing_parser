@@ -1,5 +1,6 @@
 .env/
 *.pyc
+search_employees/items/
 search_employees/build/
 search_employees/dbs/
 search_employees/eggs/

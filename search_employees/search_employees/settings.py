@@ -25,3 +25,5 @@ ITEM_PIPELINES = {
 }
 
 MAX_ITEMS_COUNT = 10000
+
+from settings_local import *

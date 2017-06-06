@@ -3,13 +3,15 @@ import sys
 
 import django
 
+from twisted.python import log
 
-DJANGO_PROJECT_PATH = os.path.join(os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__)))), 'xing_django')
-DJANGO_SETTINGS_MODULE = 'xing_django.settings'
+log.startLogging(sys.stdout)
 
+DJANGO_PROJECT_PATH = os.environ['XING_PROJECT_PATH']
 sys.path.insert(0, DJANGO_PROJECT_PATH)
-os.environ['DJANGO_SETTINGS_MODULE'] = DJANGO_SETTINGS_MODULE
+
+log.msg(DJANGO_PROJECT_PATH)
+log.msg(os.environ['DJANGO_SETTINGS_MODULE'])
 
 django.setup()
 

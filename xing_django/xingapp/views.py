@@ -50,6 +50,11 @@ class XingSearchView(LoginRequiredMixin, ListView):
             '-date_created')
         return qs
 
+    def get_context_data(self, **kwargs):
+        data = super(XingSearchView, self).get_context_data(**kwargs)
+        data['base_scrapyd_url'] = settings.BASE_SCRAPYD_URL
+        return data
+
 
 class SearchDetailsView(LoginRequiredMixin, ListView):
     model = XingSearchResult

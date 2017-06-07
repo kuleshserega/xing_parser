@@ -133,4 +133,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+BASE_SCRAPYD_URL = 'http://localhost:6800/'
+
 from settings_local import *

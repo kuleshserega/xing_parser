@@ -3,6 +3,7 @@
 {% block title %}Xing Search{% endblock %}
 {% block head %}
   {{ block.super }}
+  <script type="text/javascript">var base_scrapyd_url = '{{ base_scrapyd_url }}';</script>
   <script type="text/javascript" src="{% static 'js/search_page.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/highlight.jquery.js' %}"></script>
 {% endblock %}

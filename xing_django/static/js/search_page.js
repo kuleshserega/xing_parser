@@ -10,7 +10,7 @@ $(document).ready(function(){
     }
 
     $.ajax({
-      url: 'http://localhost:6800/schedule.json',
+      url: base_scrapyd_url + 'schedule.json',
       method: 'POST',
       data: {
         "project": "search_employees",

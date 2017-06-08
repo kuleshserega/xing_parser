@@ -27,6 +27,7 @@ class XingByCompanySpider(Spider):
     search_employees_url_part = 'employees.json?' \
         'filter=all&letter={letter}&limit=50'
     company_location = None
+    visited_company_urls = []
 
     def __init__(self, search_term='upwork', *args, **kwargs):
         super(XingByCompanySpider, self).__init__(*args, **kwargs)
@@ -63,8 +64,7 @@ class XingByCompanySpider(Spider):
         for company_url in self.company_urls_list:
             url = company_url.format(company=self.search_term)
             yield Request(
-                url, callback=self._parse_company_url,
-                meta={'dont_redirect': True}, dont_filter=True)
+                url, callback=self._parse_company_url, dont_filter=True)
 
     def _parse_company_url(self, response):
         company_name = self._get_company_name_from_page(response)
@@ -73,8 +73,8 @@ class XingByCompanySpider(Spider):
         country = self._get_company_country_from_page(response)
         company_location = '%s, %s' % (city, country)
 
-        base_company_url = response.url
-        if company_name:
+        base_company_url = response.url.replace('/employees', '')
+        if company_name and response.url not in self.visited_company_urls:
             for letter in LETTERS_LIST:
                 search_url_part = self.search_employees_url_part.format(
                     letter=letter, offset=0)
@@ -90,6 +90,8 @@ class XingByCompanySpider(Spider):
                 yield Request(
                     items_url, callback=self._parse_employees_items,
                     meta=meta, dont_filter=True)
+
+        self.visited_company_urls.append(response.url)
 
     def _get_company_name_from_page(self, response):
         company_name = response.xpath(

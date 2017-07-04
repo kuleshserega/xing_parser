@@ -87,23 +87,6 @@ class XingByGeoSpider(Spider):
                 './div/a[contains(@class, "name-page-link")]/@href'
             ).extract_first()
             item['employee_link'] = employee_link
-
             item['search'] = self.xing_search
-
-            next_page = response.urljoin(employee_link)
-            request = Request(
-                next_page,
-                callback=self._parse_location,
-                meta={'item': item}, dont_filter=True)
-            request.meta['item'] = item
-            yield request
-
-    def _parse_location(self, response):
-        item = response.meta['item']
-        location = response.xpath(
-            '//span[contains(@class, "company-location")]/text()'
-        ).extract_first()
-        if location:
-            item['location'] = location.strip()
-
-        yield item
+            item['location'] = self.city
+            yield item

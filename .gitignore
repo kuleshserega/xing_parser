@@ -10,3 +10,4 @@ search_employees/twistd.pid
 search_employees/setup.py
 search_employees/search_employees/settings_local.py
 xing_django/xing_django/settings_local.py
+xing_django/logs/
